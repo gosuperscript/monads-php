@@ -1,0 +1,33 @@
+{
+  "name": "gosuperscript/monads",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Superscript\\Monads\\": "src/"
+    },
+    "files": [
+      "src/Result/functions.php",
+      "src/Option/functions.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Superscript\\Monads\\Tests\\": "tests/"
+    }
+  },
+  "require": {
+    "php": "^8.3",
+    "webmozart/assert": "^1.11"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^1.11",
+    "pestphp/pest": "^2.34",
+    "laravel/pint": "^1.17"
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  }
+}
