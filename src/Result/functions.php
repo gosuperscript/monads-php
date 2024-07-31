@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Superscript\Monads\Result;
 
+use Throwable;
+
 /**
  * @template T
  *
@@ -24,4 +26,18 @@ function Ok(mixed $value): Ok
 function Err(mixed $err): Err
 {
     return new Err($err);
+}
+
+/**
+ * @template T
+ * @param callable(): T $f
+ * @return Result<T, Throwable>
+ */
+function attempt(callable $f): Result
+{
+    try {
+        return Ok($f());
+    } catch (Throwable $e) {
+        return Err($e);
+    }
 }

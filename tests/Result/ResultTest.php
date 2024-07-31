@@ -9,6 +9,7 @@ use Superscript\Monads\Result\Result;
 
 use function Superscript\Monads\Option\None;
 use function Superscript\Monads\Option\Some;
+use function Superscript\Monads\Result\attempt;
 use function Superscript\Monads\Result\Err;
 use function Superscript\Monads\Result\Ok;
 
@@ -225,3 +226,8 @@ test('collect', function (array $items, Result $expected) {
     [[Ok(1), Ok(2)], Ok([1, 2])],
     [[Err('error')], Err('error')]
 ]);
+
+test('attempt', function () {
+    expect(attempt(fn() => 'foo'))->toEqual(Ok('foo'));
+    expect(attempt(fn() => throw new Exception('error')))->toEqual(Err(new Exception('error')));
+});
