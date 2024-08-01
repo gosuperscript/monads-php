@@ -17,8 +17,7 @@
     }
   },
   "require": {
-    "php": "^8.3",
-    "webmozart/assert": "^1.11"
+    "php": "^8.3"
   },
   "require-dev": {
     "phpstan/phpstan": "^1.11",
