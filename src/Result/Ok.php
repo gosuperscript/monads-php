@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Superscript\Monads\Result;
 
+use InvalidArgumentException;
 use RuntimeException;
 use Superscript\Monads\Option\None;
 use Superscript\Monads\Option\Option;
@@ -36,7 +37,7 @@ final readonly class Ok extends Result
 
     public function err(): Option
     {
-        return new None();
+        return new None;
     }
 
     public function expect(string|Throwable $message): mixed
@@ -137,5 +138,14 @@ final readonly class Ok extends Result
     public function unwrapOrElse(callable $op): mixed
     {
         return $this->value;
+    }
+
+    public function transpose(): Option
+    {
+        if (! $this->value instanceof Option) {
+            throw new InvalidArgumentException('Cannot transpose an Ok value that is not an Option');
+        }
+
+        return $this->value->map(fn ($value) => new self($value));
     }
 }

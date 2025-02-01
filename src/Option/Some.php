@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Superscript\Monads\Option;
 
+use InvalidArgumentException;
 use Superscript\Monads\Result\Result;
 use Throwable;
 
@@ -17,7 +18,7 @@ use function Superscript\Monads\Result\Ok;
 final readonly class Some extends Option
 {
     /**
-     * @param TValue $value
+     * @param  TValue  $value
      */
     public function __construct(public mixed $value) {}
 
@@ -123,5 +124,14 @@ final readonly class Some extends Option
     public function xor(Option $other): Option
     {
         return $other->isNone() ? $this : None();
+    }
+
+    public function transpose(): Result
+    {
+        if (! $this->value instanceof Result) {
+            throw new InvalidArgumentException('Cannot transpose a Some value that is not a Result');
+        }
+
+        return $this->value->andThen(fn ($value) => Ok(new self($value)));
     }
 }

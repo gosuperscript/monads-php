@@ -10,6 +10,7 @@ use Superscript\Monads\Result\Result;
 use Throwable;
 
 use function Superscript\Monads\Result\Err;
+use function Superscript\Monads\Result\Ok;
 
 /**
  * @extends Option<never>
@@ -112,5 +113,10 @@ final readonly class None extends Option
     public function xor(Option $other): Option
     {
         return $other;
+    }
+
+    public function transpose(): Result
+    {
+        return Ok(new self());
     }
 }

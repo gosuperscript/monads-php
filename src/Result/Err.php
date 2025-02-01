@@ -9,6 +9,7 @@ use Superscript\Monads\Option\None;
 use Superscript\Monads\Option\Option;
 use Superscript\Monads\Option\Some;
 use Throwable;
+use function Superscript\Monads\Option\Some;
 
 /**
  * @template E
@@ -141,5 +142,10 @@ final readonly class Err extends Result
     public function unwrapOrElse(callable $op): mixed
     {
         return $op($this->err);
+    }
+
+    public function transpose(): Option
+    {
+        return Some(new self($this->err));
     }
 }

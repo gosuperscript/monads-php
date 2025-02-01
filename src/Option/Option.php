@@ -240,4 +240,13 @@ abstract readonly class Option
      * @return Option<T>|Option<U>
      */
     abstract public function xor(Option $other): Option;
+
+    /**
+     * Transposes an Option of a Result into a Result of an Option.
+     *
+     * None will be mapped to Ok(None). Some(Ok(_)) and Some(Err(_)) will be mapped to Ok(Some(_)) and Err(_).
+     *
+     * @phpstan-return Result<Option<template-type<T, Result, 'T'>>, template-type<T, Result, 'E'>>
+     */
+    abstract public function transpose();
 }

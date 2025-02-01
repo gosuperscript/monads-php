@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Superscript\Monads\Option\Option;
 use Superscript\Monads\Result\CannotUnwrapErr;
 use Superscript\Monads\Result\Err;
 use Superscript\Monads\Result\Ok;
@@ -231,3 +232,17 @@ test('attempt', function () {
     expect(attempt(fn() => 'foo'))->toEqual(Ok('foo'));
     expect(attempt(fn() => throw new Exception('error')))->toEqual(Err(new Exception('error')));
 });
+
+test('transpose', function (Result $result, mixed $expected) {
+    expect($result->transpose())->toEqual($expected);
+})->with([
+    [Ok(Some(2)), Some(Ok(2))],
+    [Ok(None()), None()],
+    [Err('error'), Some(Err('error'))],
+]);
+
+test('transpose with non-option', function (Result $result) {
+    expect(fn() => $result->transpose())->toThrow(new InvalidArgumentException('Cannot transpose an Ok value that is not an Option'));
+})->with([
+    [Ok(2)],
+]);

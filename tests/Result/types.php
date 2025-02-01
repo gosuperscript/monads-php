@@ -1,5 +1,6 @@
 <?php
 
+use Superscript\Monads\Option\Option;
 use Superscript\Monads\Result\Err;
 use Superscript\Monads\Result\Ok;
 use Superscript\Monads\Result\Result;
@@ -50,3 +51,6 @@ assertType('Superscript\Monads\Result\Result<int|string, LogicException>', $x->o
 /** @var Result<int, string> $x */
 assertType('int', $x->unwrapOr(2));
 assertType('int', $x->unwrapOrElse(fn() => 2));
+
+/** @var Result<Option<int>, Throwable> $x */
+assertType(Option::class . '<'.Result::class.'<int, '.Throwable::class.'>>', $x->transpose());
