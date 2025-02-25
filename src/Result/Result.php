@@ -267,4 +267,13 @@ abstract readonly class Result
      * @return T|U
      */
     abstract public function unwrapOrElse(callable $op): mixed;
+
+    /**
+     * Transposes a Result of an Option into an Option of a Result.
+     *
+     * Ok(None) will be mapped to None. Ok(Some(_)) and Err(_) will be mapped to Some(Ok(_)) and Some(Err(_))
+     *
+     * @phpstan-return Option<Result<template-type<T, Option, 'T'>, E>>
+     */
+    abstract public function transpose(): Option;
 }

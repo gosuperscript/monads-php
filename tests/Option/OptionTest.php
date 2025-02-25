@@ -177,3 +177,17 @@ test('from', function (mixed $value, Option $expected) {
     [null, None()],
     [None(), None()],
 ]);
+
+test('transpose', function (Option $option, mixed $expected) {
+    expect($option->transpose())->toEqual($expected);
+})->with([
+    [Some(Ok(2)), Ok(Some(2))],
+    [Some(Err('error')), Err('error')],
+    [None(), Ok(None())],
+]);
+
+test('transpose with non-result', function (Option $option) {
+    expect(fn () => $option->transpose())->toThrow(new InvalidArgumentException('Cannot transpose a Some value that is not a Result'));
+})->with([
+    [Some(2), Some(2)],
+]);

@@ -64,3 +64,6 @@ assertType(Option::class . '<int>', $x->xor($y));
 
 /** @var list<Option<int>> $items */
 assertType(Option::class . '<array<int, int>>', Option::collect($items));
+
+/** @var Option<Result<int, Throwable>> $x */
+assertType(Result::class . '<'.Option::class.'<int>, '.Throwable::class.'>', $x->transpose());
