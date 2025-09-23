@@ -22,7 +22,7 @@ if ($result->isErr()) {
 }
 
 /** @var Result<int, mixed> $result */
-assertType('Superscript\Monads\Result\Result<lowercase-string&numeric-string&uppercase-string, mixed>', $result->map(fn(int $value) => (string) $value));
+assertType('Superscript\Monads\Result\Result<non-empty-string, mixed>', $result->map(fn(int $value): string => random_bytes($value)));
 
 /** @var Result<string, mixed> $result */
 assertType('int<0, max>', $result->mapOr(42, fn(string $v) => strlen($v)));
