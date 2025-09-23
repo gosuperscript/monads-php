@@ -22,12 +22,12 @@ if ($result->isErr()) {
 }
 
 /** @var Result<int, mixed> $result */
-assertType('Superscript\Monads\Result\Result<string, mixed>', $result->map(fn(int $value) => (string) $value));
+assertType('Superscript\Monads\Result\Result<lowercase-string&numeric-string&uppercase-string, mixed>', $result->map(fn(int $value) => (string) $value));
 
 /** @var Result<string, mixed> $result */
-assertType('int', $result->mapOr(42, fn(string $v) => strlen($v)));
-assertType('int', $result->mapOrElse(fn() => 21 * 2, fn(string $v) => strlen($v)));
-assertType('int', $result->match(fn() => 21 * 2, fn(string $v) => strlen($v)));
+assertType('int<0, max>', $result->mapOr(42, fn(string $v) => strlen($v)));
+assertType('int<0, max>', $result->mapOrElse(fn() => 21 * 2, fn(string $v) => strlen($v)));
+assertType('int<0, max>', $result->match(fn() => 21 * 2, fn(string $v) => strlen($v)));
 
 /** @var Result<mixed, int> $result */
 assertType('Superscript\Monads\Result\Result<mixed, RuntimeException>', $result->mapErr(fn(int $err) => new RuntimeException(code: $err)));

@@ -29,20 +29,20 @@ assertType('bool', $x->isSomeAnd(fn(int $x) => $x > 1));
 if ($x->isSome()) {
     assertType(Some::class . '<int>', $x);
 } else {
-    assertType(None::class . '<int>', $x);
+    assertType(None::class, $x);
 }
 
 /** @var Option<int> $x */
 if ($x->isNone()) {
-    assertType(None::class . '<int>', $x);
+    assertType(None::class, $x);
 } else {
     assertType(Some::class . '<int>', $x);
 }
 
 /** @var Option<string> $x */
-assertType(Option::class . '<int>', $x->map(strlen(...)));
-assertType('int', $x->mapOr(42, strlen(...)));
-assertType('int', $x->mapOrElse(fn() => 42, strlen(...)));
+assertType(Option::class . '<int<0, max>>', $x->map(strlen(...)));
+assertType('int<0, max>', $x->mapOr(42, strlen(...)));
+assertType('int<0, max>', $x->mapOrElse(fn() => 42, strlen(...)));
 
 /** @var Option<string> $x */
 assertType(Result::class . '<string, int>', $x->okOr(0));
@@ -63,7 +63,7 @@ assertType('string', $x->unwrapOrElse(fn() => 'default'));
 assertType(Option::class . '<int>', $x->xor($y));
 
 /** @var list<Option<int>> $items */
-assertType(Option::class . '<array<int, int>>', Option::collect($items));
+assertType(Option::class . '<list<int>>', Option::collect($items));
 
 /** @var Option<Result<int, Throwable>> $x */
 assertType(Result::class . '<'.Option::class.'<int>, '.Throwable::class.'>', $x->transpose());
