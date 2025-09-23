@@ -104,7 +104,7 @@ abstract readonly class Option
     /**
      * Returns `true` if the option is a `None` value.
      *
-     * @phpstan-assert-if-true None<T> $this
+     * @phpstan-assert-if-true None $this
      * @phpstan-assert-if-false Some<T> $this
      */
     abstract public function isNone(): bool;
@@ -113,7 +113,7 @@ abstract readonly class Option
      * Returns `true` if the option is a `Some` value.
      *
      * @phpstan-assert-if-true Some<T> $this
-     * @phpstan-assert-if-false None<T> $this
+     * @phpstan-assert-if-false None $this
      */
     abstract public function isSome(): bool;
 

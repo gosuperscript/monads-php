@@ -3,3 +3,9 @@ parameters:
 
     paths:
         - src/
+
+    ignoreErrors:
+        -
+            message: '#Trait .* is used zero times and is not analysed#'
+            paths:
+                - src/*/Testing/*.php
