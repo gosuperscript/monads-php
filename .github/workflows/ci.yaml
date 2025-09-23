@@ -23,5 +23,6 @@ jobs:
           dependency-versions: "${{ matrix.dependencies }}"
 
       - run: vendor/bin/phpstan
+        if: matrix.php == '8.4' && matrix.dependencies == 'highest'
 
       - run: vendor/bin/pest
