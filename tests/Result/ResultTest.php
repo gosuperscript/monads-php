@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use Superscript\Monads\Option\Option;
 use Superscript\Monads\Result\CannotUnwrapErr;
 use Superscript\Monads\Result\Err;
 use Superscript\Monads\Result\Ok;
@@ -192,21 +191,21 @@ test('unwrap or', function (Result $result, mixed $other, mixed $expected) {
     expect($result->unwrapOr($other))->toEqual($expected);
 })->with([
     [Ok(9), 2, 9],
-    [Err('err'), 2, 2]
+    [Err('err'), 2, 2],
 ]);
 
 test('unwrap or else', function (Result $result, callable $op, mixed $expected) {
     expect($result->unwrapOrElse($op))->toEqual($expected);
 })->with([
     [Ok(2), strlen(...), 2],
-    [Err('foo'), strlen(...), 3]
+    [Err('foo'), strlen(...), 3],
 ]);
 
 test('unwrap either', function (Result $result, mixed $expected) {
     expect($result->unwrapEither())->toEqual($expected);
 })->with([
     [Ok(42), 42],
-    [Err('foo'), 'foo']
+    [Err('foo'), 'foo'],
 ]);
 
 test('into ok', function (Ok $ok, mixed $expected) {
@@ -225,7 +224,7 @@ test('collect', function (array $items, Result $expected) {
     expect(Result::collect($items))->toEqual($expected);
 })->with([
     [[Ok(1), Ok(2)], Ok([1, 2])],
-    [[Err('error')], Err('error')]
+    [[Err('error')], Err('error')],
 ]);
 
 test('attempt', function () {

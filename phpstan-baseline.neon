@@ -1,0 +1,55 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Template type U of function Superscript\\Monads\\Option\\Pipe\\andThen\(\) is not referenced in a parameter\.$#'
+			identifier: method.templateTypeNotInParameter
+			count: 1
+			path: src/Option/pipe.php
+
+		-
+			message: '#^Template type U of function Superscript\\Monads\\Option\\Pipe\\map\(\) is not referenced in a parameter\.$#'
+			identifier: method.templateTypeNotInParameter
+			count: 1
+			path: src/Option/pipe.php
+
+		-
+			message: '#^Template type U of function Superscript\\Monads\\Option\\Pipe\\unwrapOr\(\) is not referenced in a parameter\.$#'
+			identifier: method.templateTypeNotInParameter
+			count: 1
+			path: src/Option/pipe.php
+
+		-
+			message: '#^Template type F of function Superscript\\Monads\\Result\\Pipe\\andThen\(\) is not referenced in a parameter\.$#'
+			identifier: method.templateTypeNotInParameter
+			count: 1
+			path: src/Result/pipe.php
+
+		-
+			message: '#^Template type F of function Superscript\\Monads\\Result\\Pipe\\mapErr\(\) is not referenced in a parameter\.$#'
+			identifier: method.templateTypeNotInParameter
+			count: 1
+			path: src/Result/pipe.php
+
+		-
+			message: '#^Template type U of function Superscript\\Monads\\Result\\Pipe\\andThen\(\) is not referenced in a parameter\.$#'
+			identifier: method.templateTypeNotInParameter
+			count: 1
+			path: src/Result/pipe.php
+
+		-
+			message: '#^Template type U of function Superscript\\Monads\\Result\\Pipe\\map\(\) is not referenced in a parameter\.$#'
+			identifier: method.templateTypeNotInParameter
+			count: 1
+			path: src/Result/pipe.php
+
+		-
+			message: '#^Template type U of function Superscript\\Monads\\Result\\Pipe\\matchResult\(\) is not referenced in a parameter\.$#'
+			identifier: method.templateTypeNotInParameter
+			count: 1
+			path: src/Result/pipe.php
+
+		-
+			message: '#^Template type U of function Superscript\\Monads\\Result\\Pipe\\unwrapOr\(\) is not referenced in a parameter\.$#'
+			identifier: method.templateTypeNotInParameter
+			count: 1
+			path: src/Result/pipe.php
