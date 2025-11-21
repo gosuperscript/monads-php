@@ -1,3 +1,6 @@
 {
-  "preset": "per"
+  "preset": "per",
+  "exclude": [
+    "examples"
+  ]
 }
