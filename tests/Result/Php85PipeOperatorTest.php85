@@ -1,0 +1,162 @@
+<?php
+
+declare(strict_types=1);
+
+use function Superscript\Monads\Result\Ok;
+use function Superscript\Monads\Result\Err;
+use function Superscript\Monads\Result\Pipe\toOk;
+use function Superscript\Monads\Result\Pipe\toErr;
+use function Superscript\Monads\Result\Pipe\map;
+use function Superscript\Monads\Result\Pipe\mapErr;
+use function Superscript\Monads\Result\Pipe\andThen;
+use function Superscript\Monads\Result\Pipe\unwrapOr;
+use function Superscript\Monads\Result\Pipe\matchResult;
+
+/**
+ * Tests for PHP 8.5 pipe operator with Result monad using actual |> syntax.
+ * 
+ * This file contains actual pipe operator syntax and will only be loaded on PHP 8.5+.
+ * See tests/php85-bootstrap.php for the conditional loading logic.
+ */
+
+test('pipe operator - toOk and basic map', function () {
+    $result = 21
+        |> toOk(...)
+        |> map(fn($x) => $x * 2);
+
+    expect($result)->toEqual(Ok(42));
+});
+
+test('pipe operator - full success chain', function () {
+    $result = 10
+        |> toOk(...)
+        |> map(fn($x) => $x * 2)
+        |> map(fn($x) => $x + 5)
+        |> unwrapOr(0);
+
+    expect($result)->toBe(25);
+});
+
+test('pipe operator - error handling with mapErr', function () {
+    $divide = fn(int $a, int $b) => $b === 0
+        ? Err("Division by zero")
+        : Ok($a / $b);
+
+    $result = $divide(10, 0)
+        |> mapErr(fn($e) => "Error: $e")
+        |> unwrapOr(-1);
+
+    expect($result)->toBe(-1);
+});
+
+test('pipe operator - safe division success chain', function () {
+    $divide = fn(int $a, int $b) => $b === 0
+        ? Err("Division by zero")
+        : Ok($a / $b);
+
+    $result = 100
+        |> fn($x) => $divide($x, 2)
+        |> andThen(fn($x) => $divide((int)$x, 5))
+        |> unwrapOr(0);
+
+    expect($result)->toBe(10);
+});
+
+test('pipe operator - safe division error propagation', function () {
+    $divide = fn(int $a, int $b) => $b === 0
+        ? Err("Division by zero")
+        : Ok($a / $b);
+
+    $result = 100
+        |> fn($x) => $divide($x, 0)
+        |> andThen(fn($x) => $divide((int)$x, 5))
+        |> unwrapOr(-1);
+
+    expect($result)->toBe(-1);
+});
+
+test('pipe operator - matchResult with success', function () {
+    $result = 42
+        |> toOk(...)
+        |> map(fn($x) => $x * 2)
+        |> matchResult(
+            fn($e) => "Error: $e",
+            fn($v) => "Value: $v"
+        );
+
+    expect($result)->toBe('Value: 84');
+});
+
+test('pipe operator - matchResult with error', function () {
+    $result = "test error"
+        |> toErr(...)
+        |> matchResult(
+            fn($e) => "Error: $e",
+            fn($v) => "Value: $v"
+        );
+
+    expect($result)->toBe('Error: test error');
+});
+
+test('pipe operator - validation pipeline success', function () {
+    $validate = fn(int $x) => $x > 0 ? Ok($x) : Err("Must be positive");
+
+    $result = -5
+        |> $validate(...)
+        |> map(fn($x) => $x * 2)
+        |> unwrapOr(0);
+
+    expect($result)->toBe(0);
+});
+
+test('pipe operator - number validation and transformation', function () {
+    $parseInt = fn(string $s): int => (int) $s;
+    $validate = fn(int $x) => $x > 0 ? Ok($x) : Err("Must be positive");
+    $double = fn(int $x): int => $x * 2;
+
+    $result = "5"
+        |> toOk(...)
+        |> map($parseInt)
+        |> andThen($validate)
+        |> map($double)
+        |> unwrapOr(0);
+
+    expect($result)->toBe(10);
+});
+
+test('pipe operator - number validation failure', function () {
+    $parseInt = fn(string $s): int => (int) $s;
+    $validate = fn(int $x) => $x > 0 ? Ok($x) : Err("Must be positive");
+    $double = fn(int $x): int => $x * 2;
+
+    $result = "-5"
+        |> toOk(...)
+        |> map($parseInt)
+        |> andThen($validate)
+        |> map($double)
+        |> unwrapOr(0);
+
+    expect($result)->toBe(0);
+});
+
+test('pipe operator - multiple error transformations', function () {
+    $result = "initial error"
+        |> toErr(...)
+        |> mapErr(fn($e) => "Wrapped: $e")
+        |> mapErr(fn($e) => strtoupper($e))
+        |> unwrapOr("default");
+
+    expect($result)->toBe("default");
+});
+
+test('pipe operator - complex calculation pipeline', function () {
+    $result = 5
+        |> toOk(...)
+        |> map(fn($x) => $x + 3)
+        |> map(fn($x) => $x * 2)
+        |> andThen(fn($x) => $x > 10 ? Ok($x) : Err("too small"))
+        |> map(fn($x) => $x - 6)
+        |> unwrapOr(0);
+
+    expect($result)->toBe(10);
+});
