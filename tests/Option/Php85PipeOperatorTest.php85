@@ -1,0 +1,127 @@
+<?php
+
+declare(strict_types=1);
+
+use function Superscript\Monads\Option\None;
+use function Superscript\Monads\Option\Some;
+use function Superscript\Monads\Option\Pipe\option;
+use function Superscript\Monads\Option\Pipe\map;
+use function Superscript\Monads\Option\Pipe\filter;
+use function Superscript\Monads\Option\Pipe\andThen;
+use function Superscript\Monads\Option\Pipe\unwrapOr;
+
+/**
+ * Tests for PHP 8.5 pipe operator with Option monad using actual |> syntax.
+ * 
+ * This file contains actual pipe operator syntax and will only be loaded on PHP 8.5+.
+ * See tests/php85-bootstrap.php for the conditional loading logic.
+ */
+
+test('pipe operator - option creation and basic map', function () {
+    $result = 21
+        |> option(...)
+        |> map(fn($x) => $x * 2);
+
+    expect($result)->toEqual(Some(42));
+});
+
+test('pipe operator - null handling', function () {
+    $result = null
+        |> option(...)
+        |> map(fn($x) => $x * 2)
+        |> unwrapOr(99);
+
+    expect($result)->toBe(99);
+});
+
+test('pipe operator - full chain with filter', function () {
+    $result = 10
+        |> option(...)
+        |> map(fn($x) => $x * 2)
+        |> filter(fn($x) => $x > 15)
+        |> unwrapOr(0);
+
+    expect($result)->toBe(20);
+});
+
+test('pipe operator - filter removes value', function () {
+    $result = 5
+        |> option(...)
+        |> filter(fn($x) => $x > 10)
+        |> map(fn($x) => $x * 2)
+        |> unwrapOr(0);
+
+    expect($result)->toBe(0);
+});
+
+test('pipe operator - string processing pipeline', function () {
+    $result = '  Hello World  '
+        |> option(...)
+        |> map(fn($x) => trim($x))
+        |> map(fn($x) => strtolower($x))
+        |> filter(fn($x) => strlen($x) > 5)
+        |> unwrapOr('default');
+
+    expect($result)->toBe('hello world');
+});
+
+test('pipe operator - string processing with empty result', function () {
+    $result = '   '
+        |> option(...)
+        |> map(fn($x) => trim($x))
+        |> filter(fn($x) => strlen($x) > 0)
+        |> unwrapOr('guest');
+
+    expect($result)->toBe('guest');
+});
+
+test('pipe operator - flatMap with andThen success case', function () {
+    $validatePositive = fn($x) => $x > 0 ? Some($x) : None();
+
+    $result = 42
+        |> option(...)
+        |> andThen($validatePositive)
+        |> map(fn($x) => $x * 2)
+        |> unwrapOr(0);
+
+    expect($result)->toBe(84);
+});
+
+test('pipe operator - flatMap with andThen failure case', function () {
+    $validatePositive = fn($x) => $x > 0 ? Some($x) : None();
+
+    $result = -5
+        |> option(...)
+        |> andThen($validatePositive)
+        |> map(fn($x) => $x * 2)
+        |> unwrapOr(0);
+
+    expect($result)->toBe(0);
+});
+
+test('pipe operator - complex user input processing', function () {
+    $rawInputs = ['  john  ', '   ', null, 'ALICE'];
+    $expected = ['john', 'guest', 'guest', 'alice'];
+
+    foreach ($rawInputs as $index => $input) {
+        $username = $input
+            |> option(...)
+            |> map(fn($x) => trim($x))
+            |> filter(fn($x) => strlen($x) > 0)
+            |> map(fn($x) => strtolower($x))
+            |> unwrapOr('guest');
+
+        expect($username)->toBe($expected[$index]);
+    }
+});
+
+test('pipe operator - multiple transformations', function () {
+    $result = 5
+        |> option(...)
+        |> map(fn($x) => $x + 5)
+        |> map(fn($x) => $x * 2)
+        |> map(fn($x) => $x - 10)
+        |> unwrapOr(0);
+
+    expect($result)->toBe(10);
+});

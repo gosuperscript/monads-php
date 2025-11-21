@@ -6,7 +6,6 @@ namespace Superscript\Monads\Option;
 
 use RuntimeException;
 use Superscript\Monads\Result\Result;
-
 use Throwable;
 
 use function Superscript\Monads\Result\Err;

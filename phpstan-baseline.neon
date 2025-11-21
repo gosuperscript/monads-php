@@ -1,0 +1,115 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Function Superscript\\Monads\\Option\\Pipe\\filter\(\) should return callable\(Superscript\\Monads\\Option\\Option\<T\>\)\: Superscript\\Monads\\Option\\Option\<T\> but returns Closure\(Superscript\\Monads\\Option\\Option\)\: Superscript\\Monads\\Option\\Option\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Option/pipe.php
+
+		-
+			message: '#^Parameter \#1 \$f of method Superscript\\Monads\\Option\\Option\<mixed\>\:\:andThen\(\) expects callable\(mixed\)\: Superscript\\Monads\\Option\\Option\<U\>, callable\(T\)\: Superscript\\Monads\\Option\\Option\<U\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Option/pipe.php
+
+		-
+			message: '#^Parameter \#1 \$f of method Superscript\\Monads\\Option\\Option\<mixed\>\:\:filter\(\) expects callable\(mixed\)\: bool, callable\(T\)\: bool given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Option/pipe.php
+
+		-
+			message: '#^Parameter \#1 \$f of method Superscript\\Monads\\Option\\Option\<mixed\>\:\:isSomeAnd\(\) expects callable\(mixed\)\: bool, callable\(T\)\: bool given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Option/pipe.php
+
+		-
+			message: '#^Parameter \#1 \$f of method Superscript\\Monads\\Option\\Option\<mixed\>\:\:map\(\) expects callable\(mixed\)\: U, callable\(T\)\: U given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Option/pipe.php
+
+		-
+			message: '#^Template type T of function Superscript\\Monads\\Option\\Pipe\\unwrapOr\(\) is not referenced in a parameter\.$#'
+			identifier: method.templateTypeNotInParameter
+			count: 1
+			path: src/Option/pipe.php
+
+		-
+			message: '#^Function Superscript\\Monads\\Result\\Pipe\\andThen\(\) should return callable\(Superscript\\Monads\\Result\\Result\<T, E\>\)\: Superscript\\Monads\\Result\\Result\<U, E\|F\> but returns Closure\(Superscript\\Monads\\Result\\Result\)\: Superscript\\Monads\\Result\\Result\<U, mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Result/pipe.php
+
+		-
+			message: '#^Function Superscript\\Monads\\Result\\Pipe\\map\(\) should return callable\(Superscript\\Monads\\Result\\Result\<T, E\>\)\: Superscript\\Monads\\Result\\Result\<U, E\> but returns Closure\(Superscript\\Monads\\Result\\Result\)\: Superscript\\Monads\\Result\\Result\<U, mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Result/pipe.php
+
+		-
+			message: '#^Function Superscript\\Monads\\Result\\Pipe\\mapErr\(\) should return callable\(Superscript\\Monads\\Result\\Result\<T, E\>\)\: Superscript\\Monads\\Result\\Result\<T, F\> but returns Closure\(Superscript\\Monads\\Result\\Result\)\: Superscript\\Monads\\Result\\Result\<mixed, F\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/Result/pipe.php
+
+		-
+			message: '#^Parameter \#1 \$err of method Superscript\\Monads\\Result\\Result\<mixed,mixed\>\:\:match\(\) expects callable\(mixed\)\: U, callable\(E\)\: U given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Result/pipe.php
+
+		-
+			message: '#^Parameter \#1 \$op of method Superscript\\Monads\\Result\\Result\<mixed,mixed\>\:\:map\(\) expects callable\(mixed\)\: U, callable\(T\)\: U given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Result/pipe.php
+
+		-
+			message: '#^Parameter \#1 \$op of method Superscript\\Monads\\Result\\Result\<mixed,mixed\>\:\:mapErr\(\) expects callable\(mixed\)\: F, callable\(E\)\: F given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Result/pipe.php
+
+		-
+			message: '#^Parameter \#1 \$other of method Superscript\\Monads\\Result\\Result\<mixed,mixed\>\:\:andThen\(\) expects callable\(mixed\)\: Superscript\\Monads\\Result\\Result\<U, F\>, callable\(T\)\: Superscript\\Monads\\Result\\Result\<U, F\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Result/pipe.php
+
+		-
+			message: '#^Parameter \#2 \$ok of method Superscript\\Monads\\Result\\Result\<mixed,mixed\>\:\:match\(\) expects callable\(mixed\)\: U, callable\(T\)\: U given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Result/pipe.php
+
+		-
+			message: '#^Template type E of function Superscript\\Monads\\Result\\Pipe\\andThen\(\) is not referenced in a parameter\.$#'
+			identifier: method.templateTypeNotInParameter
+			count: 1
+			path: src/Result/pipe.php
+
+		-
+			message: '#^Template type E of function Superscript\\Monads\\Result\\Pipe\\map\(\) is not referenced in a parameter\.$#'
+			identifier: method.templateTypeNotInParameter
+			count: 1
+			path: src/Result/pipe.php
+
+		-
+			message: '#^Template type E of function Superscript\\Monads\\Result\\Pipe\\unwrapOr\(\) is not referenced in a parameter\.$#'
+			identifier: method.templateTypeNotInParameter
+			count: 1
+			path: src/Result/pipe.php
+
+		-
+			message: '#^Template type T of function Superscript\\Monads\\Result\\Pipe\\mapErr\(\) is not referenced in a parameter\.$#'
+			identifier: method.templateTypeNotInParameter
+			count: 1
+			path: src/Result/pipe.php
+
+		-
+			message: '#^Template type T of function Superscript\\Monads\\Result\\Pipe\\unwrapOr\(\) is not referenced in a parameter\.$#'
+			identifier: method.templateTypeNotInParameter
+			count: 1
+			path: src/Result/pipe.php

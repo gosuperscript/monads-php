@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Superscript\Monads\Option\CannotUnwrapNone;
 use Superscript\Monads\Option\Option;
-
 use Superscript\Monads\Result\Result;
 
 use function Superscript\Monads\Option\None;
@@ -187,7 +186,7 @@ test('transpose', function (Option $option, mixed $expected) {
 ]);
 
 test('transpose with non-result', function (Option $option) {
-    expect(fn () => $option->transpose())->toThrow(new InvalidArgumentException('Cannot transpose a Some value that is not a Result'));
+    expect(fn() => $option->transpose())->toThrow(new InvalidArgumentException('Cannot transpose a Some value that is not a Result'));
 })->with([
     [Some(2), Some(2)],
 ]);
