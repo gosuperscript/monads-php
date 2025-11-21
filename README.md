@@ -42,10 +42,10 @@ use function Superscript\Monads\Option\Pipe\{option, map, filter, unwrapOr};
 // Clean and readable data pipeline
 $username = $userInput
     |> option(...)                              // Wrap in Option
-    |> map(...)(fn($x) => trim($x))            // Trim whitespace
-    |> filter(...)(fn($x) => strlen($x) > 0)   // Filter empty
-    |> map(...)(fn($x) => strtolower($x))      // Lowercase
-    |> unwrapOr(...)('guest');                 // Default value
+    |> map(fn($x) => trim($x))                 // Trim whitespace
+    |> filter(fn($x) => strlen($x) > 0)        // Filter empty
+    |> map(fn($x) => strtolower($x))           // Lowercase
+    |> unwrapOr('guest');                      // Default value
 ```
 
 See [PIPE_OPERATOR.md](PIPE_OPERATOR.md) for comprehensive examples and migration guide.

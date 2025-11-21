@@ -13,7 +13,7 @@ use function Superscript\Monads\Option\Pipe\unwrapOr;
 /**
  * Tests demonstrating PHP 8.5 pipe operator with Option monad.
  *
- * Note: These tests use the traditional method chaining syntax because
+ * Note: These tests use the traditional function call syntax because
  * PHP 8.5 is not yet available in the testing environment. However, they
  * demonstrate the exact same operations that would work with the pipe operator.
  *
@@ -21,9 +21,9 @@ use function Superscript\Monads\Option\Pipe\unwrapOr;
  *
  *   $result = $value
  *       |> option(...)
- *       |> map(...)(fn($x) => $x * 2)
- *       |> filter(...)(fn($x) => $x > 10)
- *       |> unwrapOr(...)(0);
+ *       |> map(fn($x) => $x * 2)
+ *       |> filter(fn($x) => $x > 10)
+ *       |> unwrapOr(0);
  */
 
 test('pipe friendly option creation from value', function () {
@@ -32,51 +32,51 @@ test('pipe friendly option creation from value', function () {
 });
 
 test('pipe friendly map transformation', function () {
-    $result = map(Some(21))(fn($x) => $x * 2);
+    $result = map(fn($x) => $x * 2)(Some(21));
     expect($result)->toEqual(Some(42));
 
-    $result = map(None())(fn($x) => $x * 2);
+    $result = map(fn($x) => $x * 2)(None());
     expect($result)->toEqual(None());
 });
 
 test('pipe friendly filter operation', function () {
-    $result = filter(Some(42))(fn($x) => $x > 40);
+    $result = filter(fn($x) => $x > 40)(Some(42));
     expect($result)->toEqual(Some(42));
 
-    $result = filter(Some(5))(fn($x) => $x > 40);
+    $result = filter(fn($x) => $x > 40)(Some(5));
     expect($result)->toEqual(None());
 
-    $result = filter(None())(fn($x) => $x > 40);
+    $result = filter(fn($x) => $x > 40)(None());
     expect($result)->toEqual(None());
 });
 
 test('pipe friendly flatMap operation', function () {
-    $result = andThen(Some(42))(fn($x) => $x > 40 ? Some($x * 2) : None());
+    $result = andThen(fn($x) => $x > 40 ? Some($x * 2) : None())(Some(42));
     expect($result)->toEqual(Some(84));
 
-    $result = andThen(Some(5))(fn($x) => $x > 40 ? Some($x * 2) : None());
+    $result = andThen(fn($x) => $x > 40 ? Some($x * 2) : None())(Some(5));
     expect($result)->toEqual(None());
 });
 
 test('pipe friendly unwrapOr operation', function () {
-    $result = unwrapOr(Some(42))(0);
+    $result = unwrapOr(0)(Some(42));
     expect($result)->toBe(42);
 
-    $result = unwrapOr(None())(0);
+    $result = unwrapOr(0)(None());
     expect($result)->toBe(0);
 });
 
 test('pipe chain example - process user input', function () {
-    // Simulate: $input |> option(...) |> map(...)(trim) |> filter(...)(notEmpty) |> map(...)(strtoupper) |> unwrapOr(...)('GUEST')
+    // Simulate: $input |> option(...) |> map(trim) |> filter(notEmpty) |> map(strtoupper) |> unwrapOr('GUEST')
     $input = '  john  ';
 
-    $result = unwrapOr(
-        map(
-            filter(
-                map(option($input))(fn($x) => trim($x)),
-            )(fn($x) => strlen($x) > 0),
-        )(fn($x) => strtoupper($x)),
-    )('GUEST');
+    $result = unwrapOr('GUEST')(
+        map(fn($x) => strtoupper($x))(
+            filter(fn($x) => strlen($x) > 0)(
+                map(fn($x) => trim($x))(option($input))
+            )
+        )
+    );
 
     expect($result)->toBe('JOHN');
 });
@@ -84,13 +84,13 @@ test('pipe chain example - process user input', function () {
 test('pipe chain example - empty input returns default', function () {
     $input = '   ';
 
-    $result = unwrapOr(
-        map(
-            filter(
-                map(option($input))(fn($x) => trim($x)),
-            )(fn($x) => strlen($x) > 0),
-        )(fn($x) => strtoupper($x)),
-    )('GUEST');
+    $result = unwrapOr('GUEST')(
+        map(fn($x) => strtoupper($x))(
+            filter(fn($x) => strlen($x) > 0)(
+                map(fn($x) => trim($x))(option($input))
+            )
+        )
+    );
 
     expect($result)->toBe('GUEST');
 });
@@ -98,13 +98,13 @@ test('pipe chain example - empty input returns default', function () {
 test('pipe chain example - null input returns default', function () {
     $input = null;
 
-    $result = unwrapOr(
-        map(
-            filter(
-                map(option($input))(fn($x) => trim($x)),
-            )(fn($x) => strlen($x) > 0),
-        )(fn($x) => strtoupper($x)),
-    )('GUEST');
+    $result = unwrapOr('GUEST')(
+        map(fn($x) => strtoupper($x))(
+            filter(fn($x) => strlen($x) > 0)(
+                map(fn($x) => trim($x))(option($input))
+            )
+        )
+    );
 
     expect($result)->toBe('GUEST');
 });
@@ -128,10 +128,10 @@ test('pipe operator style - safe array access', function () {
         2 => ['id' => 2, 'name' => 'Bob'],
     ];
 
-    // With PHP 8.5 pipe: $id |> fn($x) => $users[$x] ?? null |> option(...) |> map(...)(fn($u) => $u['name']) |> unwrapOr(...)('Unknown')
-    $getUserName = fn(int $id) => unwrapOr(
-        map(option($users[$id] ?? null))(fn($u) => $u['name']),
-    )('Unknown');
+    // With PHP 8.5 pipe: $id |> fn($x) => $users[$x] ?? null |> option(...) |> map(fn($u) => $u['name']) |> unwrapOr('Unknown')
+    $getUserName = fn(int $id) => unwrapOr('Unknown')(
+        map(fn($u) => $u['name'])(option($users[$id] ?? null))
+    );
 
     expect($getUserName(1))->toBe('Alice');
     expect($getUserName(99))->toBe('Unknown');
@@ -142,16 +142,16 @@ test('pipe operator style - validate and transform', function () {
         ? Some($age)
         : None();
 
-    // With PHP 8.5: $input |> $validateAge(...) |> map(...)(fn($a) => "Age: $a") |> unwrapOr(...)('Invalid age')
-    $result = unwrapOr(
-        map($validateAge(25))(fn($a) => "Age: $a"),
-    )('Invalid age');
+    // With PHP 8.5: $input |> $validateAge(...) |> map(fn($a) => "Age: $a") |> unwrapOr('Invalid age')
+    $result = unwrapOr('Invalid age')(
+        map(fn($a) => "Age: $a")($validateAge(25))
+    );
 
     expect($result)->toBe('Age: 25');
 
-    $result = unwrapOr(
-        map($validateAge(200))(fn($a) => "Age: $a"),
-    )('Invalid age');
+    $result = unwrapOr('Invalid age')(
+        map(fn($a) => "Age: $a")($validateAge(200))
+    );
 
     expect($result)->toBe('Invalid age');
 });

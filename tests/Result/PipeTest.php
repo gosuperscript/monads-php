@@ -15,7 +15,7 @@ use function Superscript\Monads\Result\Pipe\matchResult;
 /**
  * Tests demonstrating PHP 8.5 pipe operator with Result monad.
  *
- * Note: These tests use the traditional method chaining syntax because
+ * Note: These tests use the traditional function call syntax because
  * PHP 8.5 is not yet available in the testing environment. However, they
  * demonstrate the exact same operations that would work with the pipe operator.
  *
@@ -23,9 +23,9 @@ use function Superscript\Monads\Result\Pipe\matchResult;
  *
  *   $result = $value
  *       |> toOk(...)
- *       |> map(...)(fn($x) => $x * 2)
- *       |> andThen(...)(validateValue)
- *       |> unwrapOr(...)(0);
+ *       |> map(fn($x) => $x * 2)
+ *       |> andThen(validateValue)
+ *       |> unwrapOr(0);
  */
 
 test('pipe friendly ok creation', function () {
@@ -37,18 +37,18 @@ test('pipe friendly err creation', function () {
 });
 
 test('pipe friendly map transformation', function () {
-    $result = map(Ok(21))(fn($x) => $x * 2);
+    $result = map(fn($x) => $x * 2)(Ok(21));
     expect($result)->toEqual(Ok(42));
 
-    $result = map(Err('error'))(fn($x) => $x * 2);
+    $result = map(fn($x) => $x * 2)(Err('error'));
     expect($result)->toEqual(Err('error'));
 });
 
 test('pipe friendly mapErr transformation', function () {
-    $result = mapErr(Ok(42))(fn($e) => "Wrapped: $e");
+    $result = mapErr(fn($e) => "Wrapped: $e")(Ok(42));
     expect($result)->toEqual(Ok(42));
 
-    $result = mapErr(Err('error'))(fn($e) => "Wrapped: $e");
+    $result = mapErr(fn($e) => "Wrapped: $e")(Err('error'));
     expect($result)->toEqual(Err('Wrapped: error'));
 });
 
@@ -57,52 +57,52 @@ test('pipe friendly flatMap operation', function () {
         ? Err("Division by zero")
         : Ok($a / $b);
 
-    $result = andThen(Ok(10))(fn($x) => $divide($x, 2));
+    $result = andThen(fn($x) => $divide($x, 2))(Ok(10));
     expect($result)->toEqual(Ok(5));
 
-    $result = andThen(Ok(10))(fn($x) => $divide($x, 0));
+    $result = andThen(fn($x) => $divide($x, 0))(Ok(10));
     expect($result)->toEqual(Err("Division by zero"));
 
-    $result = andThen(Err('previous error'))(fn($x) => $divide($x, 2));
+    $result = andThen(fn($x) => $divide($x, 2))(Err('previous error'));
     expect($result)->toEqual(Err('previous error'));
 });
 
 test('pipe friendly unwrapOr operation', function () {
-    $result = unwrapOr(Ok(42))(0);
+    $result = unwrapOr(0)(Ok(42));
     expect($result)->toBe(42);
 
-    $result = unwrapOr(Err('error'))(0);
+    $result = unwrapOr(0)(Err('error'));
     expect($result)->toBe(0);
 });
 
 test('pipe friendly match operation', function () {
-    $result = matchResult(Ok(42))(
+    $result = matchResult(
         fn($e) => "Error: $e",
-        fn($v) => "Value: $v"
-    );
+        fn($v) => "Value: $v",
+    )(Ok(42));
     expect($result)->toBe('Value: 42');
 
-    $result = matchResult(Err('oops'))(
+    $result = matchResult(
         fn($e) => "Error: $e",
-        fn($v) => "Value: $v"
-    );
+        fn($v) => "Value: $v",
+    )(Err('oops'));
     expect($result)->toBe('Error: oops');
 });
 
 test('pipe chain example - validate and process number', function () {
-    // Simulate: $input |> toOk(...) |> map(...)(parseInt) |> andThen(...)(validate) |> map(...)(double) |> unwrapOr(...)(0)
+    // Simulate: $input |> toOk(...) |> map(parseInt) |> andThen(validate) |> map(double) |> unwrapOr(0)
 
     $parseInt = fn(string $s): int => (int) $s;
     $validate = fn(int $x): mixed => $x > 0 ? Ok($x) : Err("Must be positive");
     $double = fn(int $x): int => $x * 2;
 
-    $process = fn(string $input) => unwrapOr(
-        map(
-            andThen(
-                map(toOk($input))($parseInt),
-            )($validate),
-        )($double),
-    )(0);
+    $process = fn(string $input) => unwrapOr(0)(
+        map($double)(
+            andThen($validate)(
+                map($parseInt)(toOk($input))
+            )
+        )
+    );
 
     expect($process("5"))->toBe(10);
     expect($process("-5"))->toBe(0);
@@ -114,36 +114,36 @@ test('pipe operator style - safe division chain', function () {
         ? Err("Division by zero")
         : Ok($a / $b);
 
-    // With PHP 8.5: 100 |> fn($x) => $divide($x, 2) |> andThen(...)(fn($x) => $divide((int)$x, 5)) |> unwrapOr(...)(0)
-    $result = unwrapOr(
-        andThen(
-            $divide(100, 2),
-        )(fn($x) => $divide((int) $x, 5)),
-    )(0);
+    // With PHP 8.5: 100 |> fn($x) => $divide($x, 2) |> andThen(fn($x) => $divide((int)$x, 5)) |> unwrapOr(0)
+    $result = unwrapOr(0)(
+        andThen(fn($x) => $divide((int) $x, 5))(
+            $divide(100, 2)
+        )
+    );
 
     expect($result)->toBe(10);
 
     // Test with division by zero
-    $result = unwrapOr(
-        andThen(
-            $divide(100, 0),
-        )(fn($x) => $divide((int) $x, 5)),
-    )(0);
+    $result = unwrapOr(0)(
+        andThen(fn($x) => $divide((int) $x, 5))(
+            $divide(100, 0)
+        )
+    );
 
     expect($result)->toBe(0);
 });
 
 test('pipe operator style - error recovery', function () {
-    // With PHP 8.5: $value |> toOk(...) |> map(...)(risky) |> mapErr(...)(recover) |> unwrapOr(...)('fallback')
+    // With PHP 8.5: $value |> toOk(...) |> map(risky) |> mapErr(recover) |> unwrapOr('fallback')
 
     $risky = fn(int $x): int => $x < 0 ? throw new Exception("Negative!") : $x * 2;
     $recover = fn($e): string => "Recovered from error";
 
-    $result = unwrapOr(
-        mapErr(
-            map(Ok(5))($risky),
-        )($recover),
-    )('fallback');
+    $result = unwrapOr('fallback')(
+        mapErr($recover)(
+            map($risky)(Ok(5))
+        )
+    );
 
     expect($result)->toBe(10);
 });
@@ -185,12 +185,12 @@ test('pipe operator style - parse and validate JSON', function () {
 
     $extractName = fn(array $user): string => $user['name'];
 
-    // With PHP 8.5: $json |> $parseJson(...) |> andThen(...)(validateUser) |> map(...)(extractName) |> unwrapOr(...)('Unknown')
-    $process = fn(string $json) => unwrapOr(
-        map(
-            andThen($parseJson($json))($validateUser),
-        )($extractName),
-    )('Unknown');
+    // With PHP 8.5: $json |> $parseJson(...) |> andThen(validateUser) |> map(extractName) |> unwrapOr('Unknown')
+    $process = fn(string $json) => unwrapOr('Unknown')(
+        map($extractName)(
+            andThen($validateUser)($parseJson($json))
+        )
+    );
 
     $validJson = '{"name":"Alice","email":"alice@example.com"}';
     expect($process($validJson))->toBe('Alice');

@@ -30,10 +30,10 @@ use function Superscript\Monads\Option\Pipe\{option, map, filter, andThen, unwra
 // Process user input with validation
 $username = $rawInput
     |> option(...)                              // Wrap in Option
-    |> map(...)(fn($x) => trim($x))            // Trim whitespace
-    |> filter(...)(fn($x) => strlen($x) > 0)   // Filter empty strings
-    |> map(...)(fn($x) => strtolower($x))      // Convert to lowercase
-    |> unwrapOr(...)('guest');                 // Provide default
+    |> map(fn($x) => trim($x))                 // Trim whitespace
+    |> filter(fn($x) => strlen($x) > 0)        // Filter empty strings
+    |> map(fn($x) => strtolower($x))           // Convert to lowercase
+    |> unwrapOr('guest');                      // Provide default
 
 // Safe array access
 $users = [
@@ -44,8 +44,8 @@ $users = [
 $userName = $userId
     |> fn($id) => $users[$id] ?? null
     |> option(...)
-    |> map(...)(fn($u) => $u['name'])
-    |> unwrapOr(...)('Unknown');
+    |> map(fn($u) => $u['name'])
+    |> unwrapOr('Unknown');
 
 // Validation with flatMap
 $validateAge = fn(?int $age) => 
@@ -55,8 +55,8 @@ $validateAge = fn(?int $age) =>
 
 $result = $userAge
     |> $validateAge(...)
-    |> map(...)(fn($a) => "Age: $a years")
-    |> unwrapOr(...)('Invalid age');
+    |> map(fn($a) => "Age: $a years")
+    |> unwrapOr('Invalid age');
 ```
 
 ### Result Monad with Pipe Operator
@@ -73,10 +73,10 @@ $double = fn(int $x): int => $x * 2;
 
 $result = $input
     |> toOk(...)
-    |> map(...)($parseInt)
-    |> andThen(...)($validate)
-    |> map(...)($double)
-    |> unwrapOr(...)(0);
+    |> map($parseInt)
+    |> andThen($validate)
+    |> map($double)
+    |> unwrapOr(0);
 
 // Safe division chain
 $divide = fn(int $a, int $b) => 
@@ -84,14 +84,14 @@ $divide = fn(int $a, int $b) =>
 
 $result = 100
     |> fn($x) => $divide($x, 2)
-    |> andThen(...)(fn($x) => $divide((int)$x, 5))
-    |> unwrapOr(...)(0);
+    |> andThen(fn($x) => $divide((int)$x, 5))
+    |> unwrapOr(0);
 
 // Error handling with match
 $result = $value
     |> toOk(...)
-    |> map(...)(fn($x) => $x * 2)
-    |> matchResult(...)(
+    |> map(fn($x) => $x * 2)
+    |> matchResult(
         fn($e) => "Error: $e",
         fn($v) => "Success: $v"
     );
@@ -114,9 +114,9 @@ $extractName = fn(array $user): string => $user['name'];
 
 $userName = $jsonString
     |> $parseJson(...)
-    |> andThen(...)($validateUser)
-    |> map(...)($extractName)
-    |> unwrapOr(...)('Unknown');
+    |> andThen($validateUser)
+    |> map($extractName)
+    |> unwrapOr('Unknown');
 ```
 
 ## Method Chaining (Works in PHP 8.3+)
@@ -148,10 +148,10 @@ use function Superscript\Monads\Option\Pipe\{option, map, filter, unwrapOr};
 // Clean and validate email
 $cleanEmail = $formData['email'] ?? null
     |> option(...)
-    |> map(...)(fn($e) => trim($e))
-    |> filter(...)(fn($e) => filter_var($e, FILTER_VALIDATE_EMAIL))
-    |> map(...)(fn($e) => strtolower($e))
-    |> unwrapOr(...)(null);
+    |> map(fn($e) => trim($e))
+    |> filter(fn($e) => filter_var($e, FILTER_VALIDATE_EMAIL))
+    |> map(fn($e) => strtolower($e))
+    |> unwrapOr(null);
 
 if ($cleanEmail === null) {
     throw new ValidationException('Invalid email');
@@ -181,9 +181,9 @@ $formatUser = fn($user) => [
 
 $userData = $userId
     |> $findUser(...)
-    |> andThen(...)($validateUser)
-    |> map(...)($formatUser)
-    |> unwrapOr(...)(null);
+    |> andThen($validateUser)
+    |> map($formatUser)
+    |> unwrapOr(null);
 ```
 
 ### Example 3: Configuration Loading
@@ -212,8 +212,8 @@ $validateConfig = fn(array $config) =>
 
 $config = $configPath
     |> $loadConfig(...)
-    |> andThen(...)($validateConfig)
-    |> matchResult(...)(
+    |> andThen($validateConfig)
+    |> matchResult(
         fn($err) => throw new ConfigException($err),
         fn($cfg) => $cfg
     );
@@ -224,20 +224,21 @@ $config = $configPath
 ### Option Pipe Helpers
 
 - `option($value)` - Wrap value in Option (Some if non-null, None if null)
-- `map($option)($fn)` - Transform the contained value
-- `filter($option)($predicate)` - Filter based on predicate
-- `andThen($option)($fn)` - FlatMap operation
-- `unwrapOr($option)($default)` - Extract value or return default
-- `isSomeAnd($option)($predicate)` - Check if Some and satisfies predicate
+- `map($fn)` - Transform the contained value
+- `filter($predicate)` - Filter based on predicate
+- `andThen($fn)` - FlatMap operation
+- `unwrapOr($default)` - Extract value or return default
+- `isSomeAnd($predicate)` - Check if Some and satisfies predicate
 
 ### Result Pipe Helpers
 
 - `toOk($value)` - Wrap value in Ok
 - `toErr($error)` - Wrap error in Err
-- `map($result)($fn)` - Transform the success value
-- `mapErr($result)($fn)` - Transform the error value
-- `andThen($result)($fn)` - FlatMap operation
-- `unwrapOr($result)($default)` - Extract value or return default
+- `map($fn)` - Transform the success value
+- `mapErr($fn)` - Transform the error value
+- `andThen($fn)` - FlatMap operation
+- `unwrapOr($default)` - Extract value or return default
+- `matchResult($errFn, $okFn)` - Handle both cases
 - `matchResult($result)($errFn, $okFn)` - Handle both cases
 
 ## Why Pipe-Friendly Helpers?
@@ -270,9 +271,9 @@ $result = $value
 // With pipe helpers (most functional)
 $result = $value
     |> option(...)
-    |> map(...)(fn($x) => $x * 2)
-    |> filter(...)(fn($x) => $x > 10)
-    |> unwrapOr(...)(0);
+    |> map(fn($x) => $x * 2)
+    |> filter(fn($x) => $x > 10)
+    |> unwrapOr(0);
 ```
 
 Choose the style that best fits your codebase and preferences!

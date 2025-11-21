@@ -28,14 +28,12 @@ function option(mixed $value): Option
  *
  * @template T
  * @template U
- * @param Option<T> $option
- * @return callable(callable(T): U): Option<U>
- * @phpstan-return callable(callable(T): U): Option<U>
+ * @param callable(T): U $f
+ * @return callable(Option<T>): Option<U>
  */
-function map(Option $option): callable
+function map(callable $f): callable
 {
-    /** @phpstan-ignore-next-line */
-    return fn(callable $f): Option => $option->map($f);
+    return fn(Option $option): Option => $option->map($f);
 }
 
 /**
@@ -43,12 +41,12 @@ function map(Option $option): callable
  * Pipe-friendly helper for conditional filtering.
  *
  * @template T
- * @param Option<T> $option
- * @return callable(callable(T): bool): Option<T>
+ * @param callable(T): bool $predicate
+ * @return callable(Option<T>): Option<T>
  */
-function filter(Option $option): callable
+function filter(callable $predicate): callable
 {
-    return fn(callable $f): Option => $option->filter($f);
+    return fn(Option $option): Option => $option->filter($predicate);
 }
 
 /**
@@ -57,14 +55,12 @@ function filter(Option $option): callable
  *
  * @template T
  * @template U
- * @param Option<T> $option
- * @return callable(callable(T): Option<U>): Option<U>
- * @phpstan-return callable(callable(T): Option<U>): Option<U>
+ * @param callable(T): Option<U> $f
+ * @return callable(Option<T>): Option<U>
  */
-function andThen(Option $option): callable
+function andThen(callable $f): callable
 {
-    /** @phpstan-ignore-next-line */
-    return fn(callable $f): Option => $option->andThen($f);
+    return fn(Option $option): Option => $option->andThen($f);
 }
 
 /**
@@ -73,12 +69,12 @@ function andThen(Option $option): callable
  *
  * @template T
  * @template U
- * @param Option<T> $option
- * @return callable(U): (T|U)
+ * @param U $default
+ * @return callable(Option<T>): (T|U)
  */
-function unwrapOr(Option $option): callable
+function unwrapOr(mixed $default): callable
 {
-    return fn(mixed $default): mixed => $option->unwrapOr($default);
+    return fn(Option $option): mixed => $option->unwrapOr($default);
 }
 
 /**
@@ -86,10 +82,10 @@ function unwrapOr(Option $option): callable
  * Pipe-friendly helper for conditional checks.
  *
  * @template T
- * @param Option<T> $option
- * @return callable(callable(T): bool): bool
+ * @param callable(T): bool $predicate
+ * @return callable(Option<T>): bool
  */
-function isSomeAnd(Option $option): callable
+function isSomeAnd(callable $predicate): callable
 {
-    return fn(callable $predicate): bool => $option->isSomeAnd($predicate);
+    return fn(Option $option): bool => $option->isSomeAnd($predicate);
 }

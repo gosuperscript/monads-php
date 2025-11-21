@@ -42,14 +42,12 @@ function toErr(mixed $error): Result
  * @template T
  * @template E
  * @template U
- * @param Result<T, E> $result
- * @return callable(callable(T): U): Result<U, E>
- * @phpstan-return callable(callable(T): U): Result<U, E>
+ * @param callable(T): U $f
+ * @return callable(Result<T, E>): Result<U, E>
  */
-function map(Result $result): callable
+function map(callable $f): callable
 {
-    /** @phpstan-ignore-next-line */
-    return fn(callable $f): Result => $result->map($f);
+    return fn(Result $result): Result => $result->map($f);
 }
 
 /**
@@ -59,14 +57,12 @@ function map(Result $result): callable
  * @template T
  * @template E
  * @template F
- * @param Result<T, E> $result
- * @return callable(callable(E): F): Result<T, F>
- * @phpstan-return callable(callable(E): F): Result<T, F>
+ * @param callable(E): F $f
+ * @return callable(Result<T, E>): Result<T, F>
  */
-function mapErr(Result $result): callable
+function mapErr(callable $f): callable
 {
-    /** @phpstan-ignore-next-line */
-    return fn(callable $f): Result => $result->mapErr($f);
+    return fn(Result $result): Result => $result->mapErr($f);
 }
 
 /**
@@ -77,14 +73,12 @@ function mapErr(Result $result): callable
  * @template E
  * @template U
  * @template F
- * @param Result<T, E> $result
- * @return callable(callable(T): Result<U, F>): Result<U, E|F>
- * @phpstan-return callable(callable(T): Result<U, F>): Result<U, E|F>
+ * @param callable(T): Result<U, F> $f
+ * @return callable(Result<T, E>): Result<U, E|F>
  */
-function andThen(Result $result): callable
+function andThen(callable $f): callable
 {
-    /** @phpstan-ignore-next-line */
-    return fn(callable $f): Result => $result->andThen($f);
+    return fn(Result $result): Result => $result->andThen($f);
 }
 
 /**
@@ -94,12 +88,12 @@ function andThen(Result $result): callable
  * @template T
  * @template E
  * @template U
- * @param Result<T, E> $result
- * @return callable(U): (T|U)
+ * @param U $default
+ * @return callable(Result<T, E>): (T|U)
  */
-function unwrapOr(Result $result): callable
+function unwrapOr(mixed $default): callable
 {
-    return fn(mixed $default): mixed => $result->unwrapOr($default);
+    return fn(Result $result): mixed => $result->unwrapOr($default);
 }
 
 /**
@@ -109,10 +103,11 @@ function unwrapOr(Result $result): callable
  * @template T
  * @template E
  * @template U
- * @param Result<T, E> $result
- * @return callable(callable(E): U, callable(T): U): U
+ * @param callable(E): U $err
+ * @param callable(T): U $ok
+ * @return callable(Result<T, E>): U
  */
-function matchResult(Result $result): callable
+function matchResult(callable $err, callable $ok): callable
 {
-    return fn(callable $err, callable $ok): mixed => $result->match($err, $ok);
+    return fn(Result $result): mixed => $result->match($err, $ok);
 }
