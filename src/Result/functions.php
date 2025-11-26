@@ -32,14 +32,13 @@ function Err(mixed $err): Err
  * @template T
  * @template E of Throwable
  * @param callable(): T $f
- * @return Result<T, E>
+ * @return Result<T, E|Throwable>
  */
 function attempt(callable $f): Result
 {
     try {
         return Ok($f());
     } catch (Throwable $e) {
-        /** @var E $e */
         return Err($e);
     }
 }
