@@ -9,6 +9,7 @@ use Superscript\Monads\Option\None;
 use Superscript\Monads\Option\Option;
 use Superscript\Monads\Option\Some;
 use Throwable;
+
 use function Superscript\Monads\Option\Some;
 
 /**

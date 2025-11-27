@@ -132,6 +132,6 @@ final readonly class Some extends Option
             throw new InvalidArgumentException('Cannot transpose a Some value that is not a Result');
         }
 
-        return $this->value->andThen(fn ($value) => Ok(new self($value)));
+        return $this->value->andThen(fn($value) => Ok(new self($value)));
     }
 }

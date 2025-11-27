@@ -22,7 +22,7 @@ class ResultTypeTest extends TypeInferenceTestCase
     public function testFileAsserts(
         string $assertType,
         string $file,
-        mixed ...$args
+        mixed ...$args,
     ): void {
         $this->assertFileAsserts($assertType, $file, ...$args);
     }

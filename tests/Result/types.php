@@ -53,4 +53,4 @@ assertType('int', $x->unwrapOr(2));
 assertType('int', $x->unwrapOrElse(fn() => 2));
 
 /** @var Result<Option<int>, Throwable> $x */
-assertType(Option::class . '<'.Result::class.'<int, '.Throwable::class.'>>', $x->transpose());
+assertType(Option::class . '<' . Result::class . '<int, ' . Throwable::class . '>>', $x->transpose());
