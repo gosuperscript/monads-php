@@ -46,6 +46,10 @@ final readonly class Err extends Result
             throw $message;
         }
 
+        if ($this->err instanceof Throwable) {
+            throw new RuntimeException($message, previous: $this->err);
+        }
+
         throw new RuntimeException($message);
     }
 
