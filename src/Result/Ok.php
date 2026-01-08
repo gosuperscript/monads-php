@@ -47,7 +47,11 @@ final readonly class Ok extends Result
 
     public function expectErr(Throwable|string $message): mixed
     {
-        throw $message instanceof Throwable ? $message : new RuntimeException($message);
+        if ($message instanceof Throwable) {
+            throw $message;
+        }
+
+        throw new RuntimeException($message);
     }
 
     public function inspect(callable $f): Result
