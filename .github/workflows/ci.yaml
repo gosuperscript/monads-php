@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [ "8.3", "8.4" ]
+        php: [ "8.3", "8.4", "8.5" ]
         dependencies: [ "lowest", "highest" ]
 
     steps:
@@ -26,3 +26,20 @@ jobs:
       - run: vendor/bin/phpstan
 
       - run: vendor/bin/pest
+
+  # Test actual pipe operator syntax on PHP 8.5
+  pipe-operator-examples:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || contains(github.ref, 'pipe-operator')
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.5"
+
+      - uses: ramsey/composer-install@v3
+
+      - name: Run pipe operator examples
+        run: php examples/pipe-operator.php
