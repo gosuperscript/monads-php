@@ -37,7 +37,7 @@ final readonly class Ok extends Result
 
     public function err(): Option
     {
-        return new None;
+        return new None();
     }
 
     public function expect(string|Throwable $message): mixed
@@ -150,6 +150,6 @@ final readonly class Ok extends Result
             throw new InvalidArgumentException('Cannot transpose an Ok value that is not an Option');
         }
 
-        return $this->value->map(fn ($value) => new self($value));
+        return $this->value->map(fn($value) => new self($value));
     }
 }

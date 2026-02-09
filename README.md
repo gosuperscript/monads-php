@@ -12,10 +12,11 @@ A collection of useful monads for PHP 8.3+. Inspired by Rust's powerful type sys
 - 🔒 **Type-safe** - Full PHPStan level 9 support with generics
 - 🧪 **Well-tested** - Comprehensive test suite
 - 📦 **Zero dependencies** - Lightweight and focused
-- 🎯 **Three core monads**:
+- 🎯 **Four core monads**:
   - **`Option<T>`** - Represent optional values without null
   - **`Result<T, E>`** - Handle errors without exceptions
   - **`Lazy<T>`** - Defer computation until needed
+  - **`Writer<W, T>`** - Carry a value alongside an accumulated log
 
 ## Installation
 
@@ -161,6 +162,55 @@ if ($needUsers) {
 }
 ```
 
+### Writer Monad
+
+The `Writer` monad lets you carry a value alongside an accumulated log through a chain of computations. This is useful for logging, auditing, or building up auxiliary data without side effects.
+
+```php
+use Superscript\Monads\Writer\Writer;
+use function Superscript\Monads\Writer\Writer;
+
+// Create a Writer with an array-based log
+$writer = Writer(42, ['initial value']);
+
+// Access value and log
+$writer->value(); // 42
+$writer->log();   // ['initial value']
+$writer->run();   // [42, ['initial value']]
+
+// Transform the value (log unchanged)
+Writer(21)->map(fn($x) => $x * 2); // Writer(42, [])
+
+// Chain computations that produce their own logs
+Writer(10, ['start'])
+    ->andThen(fn($x) => Writer($x * 2, ['doubled']))
+    ->andThen(fn($x) => Writer($x + 1, ['incremented']));
+// value: 21, log: ['start', 'doubled', 'incremented']
+
+// Append to the log without changing the value
+Writer(42)->tell(['something happened']);
+// value: 42, log: ['something happened']
+
+// Use a custom log type with Writer::of()
+$writer = Writer::of('hello', '', fn(string $a, string $b): string => $a . $b)
+    ->tell(' world')
+    ->map(fn($v) => strtoupper($v));
+// value: 'HELLO', log: ' world'
+```
+
+#### Key Writer Methods
+
+- `value()` - Get the contained value
+- `log()` - Get the accumulated log
+- `run()` - Get both as a `[$value, $log]` tuple
+- `map(callable $f)` - Transform the value, leaving the log unchanged
+- `andThen(callable $f)` - Chain a computation that returns a Writer, combining logs (flatMap)
+- `tell($entry)` - Append to the log without changing the value
+- `mapLog(callable $f)` - Transform the log
+- `inspect(callable $f)` - Execute a side effect with the value
+- `listen(callable $f)` - Access both value and log to produce a new value
+- `reset($log)` - Reset the log to a given value
+
 ### Collection Operations
 
 Both `Option` and `Result` support collecting arrays of values:
@@ -213,6 +263,29 @@ $result = divide(10, 2)
 $error = divide(10, 0)
     ->map(fn($x) => $x * 2)
     ->unwrapOr(0); // 0
+```
+
+#### Computation with Logging
+
+```php
+use function Superscript\Monads\Writer\Writer;
+
+function addTax(float $price): Writer {
+    $taxed = $price * 1.2;
+    return Writer($taxed, [sprintf('Tax: %.2f -> %.2f', $price, $taxed)]);
+}
+
+function applyDiscount(float $price): Writer {
+    $discounted = $price * 0.9;
+    return Writer($discounted, [sprintf('Discount: %.2f -> %.2f', $price, $discounted)]);
+}
+
+$result = Writer(100.0, ['Starting price: 100.00'])
+    ->andThen(fn($p) => addTax($p))
+    ->andThen(fn($p) => applyDiscount($p));
+
+$result->value(); // 108.0
+$result->log();   // ['Starting price: 100.00', 'Tax: 100.00 -> 120.00', 'Discount: 120.00 -> 108.00']
 ```
 
 #### Pipeline Processing
