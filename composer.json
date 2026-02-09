@@ -8,7 +8,8 @@
     },
     "files": [
       "src/Result/functions.php",
-      "src/Option/functions.php"
+      "src/Option/functions.php",
+      "src/Writer/functions.php"
     ]
   },
   "autoload-dev": {
