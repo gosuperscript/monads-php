@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Superscript\Monads\Result\Testing;
 
 use PHPUnit\Framework\Constraint\Constraint;
+use PHPUnit\Util\Exporter;
 use Superscript\Monads\Result\Result;
 
 final class IsOk extends Constraint
@@ -21,6 +22,6 @@ final class IsOk extends Constraint
 
     protected function failureDescription(mixed $other): string
     {
-        return sprintf('%s %s', $this->exporter()->export($other), $this->toString());
+        return sprintf('%s %s', Exporter::export($other), $this->toString());
     }
 }
