@@ -24,6 +24,9 @@ class CannotUnwrapErr extends RuntimeException
             $message = 'Err';
         }
 
-        return new self('Unwrapped with the expectation of an Ok, but found ' . $message, previous: $err instanceof Throwable ? $err : null);
+        return new self(
+            'Unwrapped with the expectation of an Ok, but found ' . $message,
+            previous: $err instanceof Throwable ? $err : null,
+        );
     }
 }

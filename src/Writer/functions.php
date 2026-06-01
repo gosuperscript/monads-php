@@ -17,7 +17,10 @@ namespace Superscript\Monads\Writer;
  */
 function Writer(mixed $value, array $log = []): Writer
 {
-    $combiner = /** @param list<mixed> $a @param list<mixed> $b @return list<mixed> */ fn(array $a, array $b): array => array_values([...$a, ...$b]);
+    $combiner = /** @param list<mixed> $a @param list<mixed> $b @return list<mixed> */ fn(
+        array $a,
+        array $b,
+    ): array => array_values([...$a, ...$b]);
 
     return Writer::of($value, $log, $combiner);
 }

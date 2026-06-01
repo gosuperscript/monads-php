@@ -22,7 +22,9 @@ if ($result->isErr()) {
 }
 
 /** @var Result<int, mixed> $result */
-assertType('Superscript\Monads\Result\Result<non-empty-string, mixed>', $result->map(fn(int $value): string => random_bytes($value)));
+assertType('Superscript\Monads\Result\Result<non-empty-string, mixed>', $result->map(
+    fn(int $value): string => random_bytes($value),
+));
 
 /** @var Result<string, mixed> $result */
 assertType('int<0, max>', $result->mapOr(42, fn(string $v) => strlen($v)));
@@ -30,7 +32,10 @@ assertType('int<0, max>', $result->mapOrElse(fn() => 21 * 2, fn(string $v) => st
 assertType('int<0, max>', $result->match(fn() => 21 * 2, fn(string $v) => strlen($v)));
 
 /** @var Result<mixed, int> $result */
-assertType('Superscript\Monads\Result\Result<mixed, RuntimeException>', $result->mapErr(fn(int $err) => new RuntimeException(code: $err)));
+assertType(
+    'Superscript\Monads\Result\Result<mixed, RuntimeException>',
+    $result->mapErr(fn(int $err) => new RuntimeException(code: $err)),
+);
 
 /** @var Result<int, Throwable> $result */
 assertType('Superscript\Monads\Result\Result<int, Throwable>', $result->inspect(fn() => null));

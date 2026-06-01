@@ -12,9 +12,9 @@ uses(ComparesOptions::class);
 test('comparison', function (mixed $actual, mixed $expected) {
     expect($actual)->toEqual($expected);
 })->with([
-    [Some(1), 1],
+    [Some(1),        1],
     [Some(Some('foo')), 'foo'],
-    [None(), null],
+    [None(),            null],
 ]);
 
 test('inequal comparison', function (mixed $actual, mixed $expected) {

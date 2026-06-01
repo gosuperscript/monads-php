@@ -25,7 +25,7 @@ test('assertErr passes with Err result', function () {
 test('assertErr fails with Ok result', function () {
     $okResult = Ok('success value');
 
-    expect(function () {
+    expect(function () use ($okResult) {
         ResultAssertionsTestCase::assertErr($okResult);
     })->toThrow(ExpectationFailedException::class);
 });
@@ -47,7 +47,7 @@ test('assertOk passes with Ok result', function () {
 test('assertOk fails with Err result', function () {
     $errResult = Err('error message');
 
-    expect(function () {
+    expect(function () use ($errResult) {
         ResultAssertionsTestCase::assertOk($errResult);
     })->toThrow(ExpectationFailedException::class);
 });

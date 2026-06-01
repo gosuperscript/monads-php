@@ -12,7 +12,7 @@ uses(ComparesResults::class);
 test('comparison', function (mixed $actual, mixed $expected) {
     expect($actual)->toEqual($expected);
 })->with([
-    [Ok(1), 1],
+    [Ok(1),      1],
     [Ok(Ok('foo')), 'foo'],
 ]);
 

@@ -13,7 +13,7 @@ trait ComparesOptions
     #[Before]
     protected function setUpComparesOptions(): void
     {
-        if (! $this instanceof TestCase) {
+        if (!$this instanceof TestCase) {
             throw new LogicException('This trait should only be used on PHPUnit TestCase');
         }
 

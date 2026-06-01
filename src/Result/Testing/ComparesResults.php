@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Superscript\Monads\Result\Testing;
 
 use LogicException;
-use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\TestCase;
 
 trait ComparesResults
@@ -14,7 +14,7 @@ trait ComparesResults
     #[Before]
     protected function setUpComparesResults(): void
     {
-        if (! $this instanceof TestCase) {
+        if (!$this instanceof TestCase) {
             throw new LogicException('This trait should only be used on PHPUnit TestCase');
         }
 

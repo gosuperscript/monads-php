@@ -15,24 +15,24 @@ final class ResultComparator extends Comparator
 {
     public function accepts(mixed $expected, mixed $actual): bool
     {
-        return ! $expected instanceof Result && $actual instanceof Result;
+        return !$expected instanceof Result && $actual instanceof Result;
     }
 
-    public function assertEquals(mixed $expected, mixed $actual, float $delta = 0.0, bool $canonicalize = false, bool $ignoreCase = false): void
-    {
-        if (! $actual instanceof Result) {
+    public function assertEquals(
+        mixed $expected,
+        mixed $actual,
+        float $delta = 0.0,
+        bool $canonicalize = false,
+        bool $ignoreCase = false,
+    ): void {
+        if (!$actual instanceof Result) {
             throw new InvalidArgumentException();
         }
 
         try {
             $unwrapped = $actual->unwrap();
         } catch (CannotUnwrapErr) {
-            throw new ComparisonFailure(
-                $expected,
-                $actual,
-                (new Exporter())->export($expected),
-                'Err',
-            );
+            throw new ComparisonFailure($expected, $actual, (new Exporter())->export($expected), 'Err');
         }
 
         $comparator = $this->factory()->getComparatorFor($expected, $unwrapped);

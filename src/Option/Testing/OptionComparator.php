@@ -15,12 +15,17 @@ final class OptionComparator extends Comparator
 {
     public function accepts(mixed $expected, mixed $actual): bool
     {
-        return ! $expected instanceof Option && $actual instanceof Option;
+        return !$expected instanceof Option && $actual instanceof Option;
     }
 
-    public function assertEquals(mixed $expected, mixed $actual, float $delta = 0.0, bool $canonicalize = false, bool $ignoreCase = false): void
-    {
-        if (! $actual instanceof Option) {
+    public function assertEquals(
+        mixed $expected,
+        mixed $actual,
+        float $delta = 0.0,
+        bool $canonicalize = false,
+        bool $ignoreCase = false,
+    ): void {
+        if (!$actual instanceof Option) {
             throw new InvalidArgumentException();
         }
 
@@ -31,12 +36,7 @@ final class OptionComparator extends Comparator
                 return;
             }
 
-            throw new ComparisonFailure(
-                $expected,
-                $actual,
-                (new Exporter())->export($expected),
-                'None',
-            );
+            throw new ComparisonFailure($expected, $actual, (new Exporter())->export($expected), 'None');
         }
 
         $comparator = $this->factory()->getComparatorFor($expected, $unwrapped);

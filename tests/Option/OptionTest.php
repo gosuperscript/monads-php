@@ -44,10 +44,10 @@ test('is none', function (Option $option, bool $expected) {
 test('and', function (Option $x, Option $y, Option $expected) {
     expect($x->and($y))->toEqual($expected);
 })->with([
-    [Some(2), None(), None()],
-    [None(), Some('foo'), None()],
+    [Some(2), None(),      None()],
+    [None(),  Some('foo'), None()],
     [Some(2), Some('foo'), Some('foo')],
-    [None(), None(), None()],
+    [None(),  None(),      None()],
 ]);
 
 test('and then', function (Option $option, Option $expected) {
@@ -57,9 +57,9 @@ test('and then', function (Option $option, Option $expected) {
 
     expect($option->andThen(fn($x) => $checked_mul($x, $x)->map(strval(...))))->toEqual($expected);
 })->with([
-    [Some(2), Some('4')],
+    [Some(2),      Some('4')],
     [Some(1_000_000), None()],
-    [None(), None()],
+    [None(),          None()],
 ]);
 
 test('expect', function () {
@@ -69,7 +69,7 @@ test('expect', function () {
 });
 
 test('filter', function (Option $option, Option $expected) {
-    $is_even = static fn(int $x) => $x % 2 === 0;
+    $is_even = static fn(int $x) => ($x % 2) === 0;
 
     expect($option->filter($is_even))->toEqual($expected);
 })->with([
@@ -95,7 +95,7 @@ test('map', function (Option $option, Option $expected) {
     expect($option->map(strlen(...)))->toEqual($expected);
 })->with([
     [Some('Hello, world!'), Some(13)],
-    [None(), None()],
+    [None(),                None()],
 ]);
 
 test('map or', function (Option $option, mixed $expected) {
@@ -116,31 +116,31 @@ test('ok or', function (Option $result, Result $expected) {
     expect($result->okOr(0))->toEqual($expected);
 })->with([
     [Some('foo'), Ok('foo')],
-    [None(), Err(0)],
+    [None(),      Err(0)],
 ]);
 
 test('ok or else', function (Option $result, Result $expected) {
     expect($result->okOrElse(fn() => 0))->toEqual($expected);
 })->with([
     [Some('foo'), Ok('foo')],
-    [None(), Err(0)],
+    [None(),      Err(0)],
 ]);
 
 test('or', function (Option $x, Option $y, Option $expected) {
     expect($x->or($y))->toEqual($expected);
 })->with([
-    [Some(2), None(), Some(2)],
-    [None(), Some(100), Some(100)],
+    [Some(2), None(),    Some(2)],
+    [None(),  Some(100), Some(100)],
     [Some(2), Some(100), Some(2)],
-    [None(), None(), None()],
+    [None(),  None(),    None()],
 ]);
 
 test('or else', function (Option $option, Option $other, Option $expected) {
     expect($option->orElse(fn() => $other))->toEqual($expected);
 })->with([
     [Some('barbarians'), Some('vikings'), Some('barbarians')],
-    [None(), Some('barbarians'), Some('barbarians')],
-    [None(), None(), None()],
+    [None(),             Some('barbarians'), Some('barbarians')],
+    [None(),             None(),             None()],
 ]);
 
 test('unwrap', function () {
@@ -162,31 +162,32 @@ test('unwrap or else', function () {
 test('xor', function (Option $option, Option $other, Option $expected) {
     expect($option->xor($other))->toEqual($expected);
 })->with([
-    [Some(2), None(), Some(2)],
-    [None(), Some(2), Some(2)],
+    [Some(2), None(),  Some(2)],
+    [None(),  Some(2), Some(2)],
     [Some(2), Some(2), None()],
-    [None(), None(), None()],
+    [None(),  None(),  None()],
 ]);
 
 test('from', function (mixed $value, Option $expected) {
     expect(Option::from($value))->toEqual($expected);
 })->with([
-    ['foo', Some('foo')],
+    ['foo',       Some('foo')],
     [Some('foo'), Some('foo')],
-    [null, None()],
-    [None(), None()],
+    [null,        None()],
+    [None(),      None()],
 ]);
 
 test('transpose', function (Option $option, mixed $expected) {
     expect($option->transpose())->toEqual($expected);
 })->with([
-    [Some(Ok(2)), Ok(Some(2))],
+    [Some(Ok(2)),     Ok(Some(2))],
     [Some(Err('error')), Err('error')],
-    [None(), Ok(None())],
+    [None(),             Ok(None())],
 ]);
 
 test('transpose with non-result', function (Option $option) {
-    expect(fn() => $option->transpose())->toThrow(new InvalidArgumentException('Cannot transpose a Some value that is not a Result'));
+    expect(fn() => $option->transpose())
+        ->toThrow(new InvalidArgumentException('Cannot transpose a Some value that is not a Result'));
 })->with([
     [Some(2), Some(2)],
 ]);

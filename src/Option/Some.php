@@ -20,7 +20,9 @@ final readonly class Some extends Option
     /**
      * @param  TValue  $value
      */
-    public function __construct(public mixed $value) {}
+    public function __construct(
+        public mixed $value,
+    ) {}
 
     public function and(Option $other): Option
     {
@@ -128,7 +130,7 @@ final readonly class Some extends Option
 
     public function transpose(): Result
     {
-        if (! $this->value instanceof Result) {
+        if (!$this->value instanceof Result) {
             throw new InvalidArgumentException('Cannot transpose a Some value that is not a Result');
         }
 

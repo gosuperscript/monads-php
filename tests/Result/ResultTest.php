@@ -83,7 +83,8 @@ test('match', function (Result $result, mixed $expected) {
 ]);
 
 test('map err', function (Result $result, mixed $expected) {
-    expect($result->mapErr(fn(Exception $err) => new Exception('The error: ' . $err->getMessage())))->toEqual($expected);
+    expect($result->mapErr(fn(Exception $err) => new Exception('The error: ' . $err->getMessage())))
+        ->toEqual($expected);
 })->with([
     [Ok(2), Ok(2)],
     [Err(new Exception('Error!')), Err(new Exception('The error: Error!'))],
@@ -120,13 +121,21 @@ test('unwrap', function () {
     expect($result->unwrap())->toEqual(2);
 
     $result = Err('Some error message');
-    expect(fn() => $result->unwrap())->toThrow(new CannotUnwrapErr('Unwrapped with the expectation of an Ok, but found Err(Some error message)'));
+    expect(fn() => $result->unwrap())
+        ->toThrow(new CannotUnwrapErr('Unwrapped with the expectation of an Ok, but found Err(Some error message)'));
 
     $result = Err(new InvalidArgumentException('Some error message'));
-    expect(fn() => $result->unwrap())->toThrow(new CannotUnwrapErr('Unwrapped with the expectation of an Ok, but found Err(Some error message)', previous: new InvalidArgumentException('Some error message')));
+    expect(fn() => $result->unwrap())
+        ->toThrow(
+            new CannotUnwrapErr(
+                'Unwrapped with the expectation of an Ok, but found Err(Some error message)',
+                previous: new InvalidArgumentException('Some error message'),
+            ),
+        );
 
     $result = Err(new stdClass());
-    expect(fn() => $result->unwrap())->toThrow(new CannotUnwrapErr('Unwrapped with the expectation of an Ok, but found Err'));
+    expect(fn() => $result->unwrap())
+        ->toThrow(new CannotUnwrapErr('Unwrapped with the expectation of an Ok, but found Err'));
 });
 
 test('unwrap err', function () {
@@ -140,10 +149,10 @@ test('unwrap err', function () {
 test('and', function (Result $x, Result $y, mixed $expected) {
     expect($x->and($y))->toEqual($expected);
 })->with([
-    [Ok(4), Err('late error'), Err('late error')],
-    [Err('early error'), Ok(2), Err('early error')],
-    [Err('not a 2'), Err('late error'), Err('not a 2')],
-    [Ok(2), Ok('different result type'), Ok('different result type')],
+    [Ok(4),           Err('late error'),        Err('late error')],
+    [Err('early error'), Ok(2),                    Err('early error')],
+    [Err('not a 2'),  Err('late error'),        Err('not a 2')],
+    [Ok(2),           Ok('different result type'), Ok('different result type')],
 ]);
 
 test('and then', function (Result $x, mixed $expected) {
@@ -159,18 +168,18 @@ test('and then', function (Result $x, mixed $expected) {
 
     expect($x->andThen(fn($x) => $perfectSquareRoot($x)->map(fn($x) => (string) $x)))->toEqual($expected);
 })->with([
-    [Ok(16), Ok('4')],
-    [Ok(15), Err('not a perfect square')],
+    [Ok(16),           Ok('4')],
+    [Ok(15),           Err('not a perfect square')],
     [Err('not a number'), Err('not a number')],
 ]);
 
 test('or', function (Result $x, Result $y, mixed $expected) {
     expect($x->or($y))->toEqual($expected);
 })->with([
-    [Ok(2), Err('late error'), Ok(2)],
-    [Err('early error'), Ok(2), Ok(2)],
-    [Err('not a 2'), Err('late error'), Err('late error')],
-    [Ok(2), Ok(100), Ok(2)],
+    [Ok(2),           Err('late error'), Ok(2)],
+    [Err('early error'), Ok(2),          Ok(2)],
+    [Err('not a 2'),  Err('late error'), Err('late error')],
+    [Ok(2),           Ok(100),        Ok(2)],
 ]);
 
 test('or else', function () {
@@ -241,7 +250,8 @@ test('transpose', function (Result $result, mixed $expected) {
 ]);
 
 test('transpose with non-option', function (Result $result) {
-    expect(fn() => $result->transpose())->toThrow(new InvalidArgumentException('Cannot transpose an Ok value that is not an Option'));
+    expect(fn() => $result->transpose())
+        ->toThrow(new InvalidArgumentException('Cannot transpose an Ok value that is not an Option'));
 })->with([
     [Ok(2)],
 ]);

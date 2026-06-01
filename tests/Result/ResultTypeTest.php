@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Support\Monad\Result;
 
 use PHPStan\Testing\TypeInferenceTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class ResultTypeTest extends TypeInferenceTestCase
 {
@@ -16,14 +17,9 @@ class ResultTypeTest extends TypeInferenceTestCase
         return self::gatherAssertTypes(__DIR__ . '/types.php');
     }
 
-    /**
-     * @dataProvider providesTypeAssertions
-     */
-    public function testFileAsserts(
-        string $assertType,
-        string $file,
-        mixed ...$args,
-    ): void {
+    #[DataProvider('providesTypeAssertions')]
+    public function testFileAsserts(string $assertType, string $file, mixed ...$args): void
+    {
         $this->assertFileAsserts($assertType, $file, ...$args);
     }
 }

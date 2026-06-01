@@ -146,7 +146,7 @@ final readonly class Ok extends Result
 
     public function transpose(): Option
     {
-        if (! $this->value instanceof Option) {
+        if (!$this->value instanceof Option) {
             throw new InvalidArgumentException('Cannot transpose an Ok value that is not an Option');
         }
 

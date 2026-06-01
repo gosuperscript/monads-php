@@ -102,11 +102,7 @@ final readonly class Writer
         /** @var self<W, U> $result */
         $result = $f($this->value);
 
-        return new self(
-            $result->value,
-            ($this->combiner)($this->log, $result->log),
-            $this->combiner,
-        );
+        return new self($result->value, ($this->combiner)($this->log, $result->log), $this->combiner);
     }
 
     /**
@@ -117,11 +113,7 @@ final readonly class Writer
      */
     public function tell(mixed $entry): self
     {
-        return new self(
-            $this->value,
-            ($this->combiner)($this->log, $entry),
-            $this->combiner,
-        );
+        return new self($this->value, ($this->combiner)($this->log, $entry), $this->combiner);
     }
 
     /**

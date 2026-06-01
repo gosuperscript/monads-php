@@ -36,7 +36,7 @@ final class Lazy
      */
     public function evaluate(): mixed
     {
-        if (! $this->evaluated) {
+        if (!$this->evaluated) {
             $this->value = ($this->callable)();
             $this->evaluated = true;
         }

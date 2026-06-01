@@ -21,8 +21,7 @@ test('run', function () {
 });
 
 test('map', function () {
-    $writer = Writer(10, ['initial'])
-        ->map(fn($x) => $x * 2);
+    $writer = Writer(10, ['initial'])->map(fn($x) => $x * 2);
 
     expect($writer->value())->toBe(20);
     expect($writer->log())->toBe(['initial']);
@@ -38,16 +37,14 @@ test('and then', function () {
 });
 
 test('tell', function () {
-    $writer = Writer(42, ['initial'])
-        ->tell(['extra entry']);
+    $writer = Writer(42, ['initial'])->tell(['extra entry']);
 
     expect($writer->value())->toBe(42);
     expect($writer->log())->toBe(['initial', 'extra entry']);
 });
 
 test('map log', function () {
-    $writer = Writer(42, ['a', 'b', 'c'])
-        ->mapLog(fn($log) => array_map('strtoupper', $log));
+    $writer = Writer(42, ['a', 'b', 'c'])->mapLog(fn($log) => array_map('strtoupper', $log));
 
     expect($writer->value())->toBe(42);
     expect($writer->log())->toBe(['A', 'B', 'C']);
@@ -56,10 +53,9 @@ test('map log', function () {
 test('inspect', function () {
     $inspected = null;
 
-    $writer = Writer(42, ['log'])
-        ->inspect(function ($value) use (&$inspected) {
-            $inspected = $value;
-        });
+    $writer = Writer(42, ['log'])->inspect(function ($value) use (&$inspected) {
+        $inspected = $value;
+    });
 
     expect($inspected)->toBe(42);
     expect($writer->value())->toBe(42);
@@ -67,16 +63,14 @@ test('inspect', function () {
 });
 
 test('reset', function () {
-    $writer = Writer(42, ['a', 'b', 'c'])
-        ->reset([]);
+    $writer = Writer(42, ['a', 'b', 'c'])->reset([]);
 
     expect($writer->value())->toBe(42);
     expect($writer->log())->toBe([]);
 });
 
 test('listen', function () {
-    $writer = Writer(42, ['a', 'b'])
-        ->listen(fn($value, $log) => [$value, count($log)]);
+    $writer = Writer(42, ['a', 'b'])->listen(fn($value, $log) => [$value, count($log)]);
 
     expect($writer->value())->toBe([42, 2]);
     expect($writer->log())->toBe(['a', 'b']);
@@ -93,28 +87,24 @@ test('chaining preserves immutability', function () {
 });
 
 test('of with custom combiner', function () {
-    $writer = Writer::of('hello', '', fn(string $a, string $b): string => $a . $b)
-        ->tell(' world')
-        ->andThen(fn($v) => Writer::of(strtoupper($v), '!', fn(string $a, string $b): string => $a . $b));
+    $writer = Writer::of('hello', '', fn(string $a, string $b): string => $a . $b)->tell(
+        ' world',
+    )->andThen(fn($v) => Writer::of(strtoupper($v), '!', fn(string $a, string $b): string => $a . $b));
 
     expect($writer->value())->toBe('HELLO');
     expect($writer->log())->toBe(' world!');
 });
 
 test('pipeline with logging', function () {
-    $addTax = fn($price) => Writer(
-        $price * 1.2,
-        [sprintf('Added tax: %.2f -> %.2f', $price, $price * 1.2)],
-    );
+    $addTax = fn($price) => Writer($price * 1.2, [sprintf('Added tax: %.2f -> %.2f', $price, $price * 1.2)]);
 
-    $applyDiscount = fn($price) => Writer(
+    $applyDiscount = fn($price) => Writer($price * 0.9, [sprintf(
+        'Applied 10%% discount: %.2f -> %.2f',
+        $price,
         $price * 0.9,
-        [sprintf('Applied 10%% discount: %.2f -> %.2f', $price, $price * 0.9)],
-    );
+    )]);
 
-    $writer = Writer(100.0, ['Starting price: 100.00'])
-        ->andThen($addTax)
-        ->andThen($applyDiscount);
+    $writer = Writer(100.0, ['Starting price: 100.00'])->andThen($addTax)->andThen($applyDiscount);
 
     expect($writer->value())->toBe(108.0);
     expect($writer->log())->toHaveCount(3);
