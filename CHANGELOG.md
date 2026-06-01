@@ -2,6 +2,14 @@
 
 All notable changes to `gosuperscript/monads` will be documented in this file.
 
+## 1.3.0 - 2026-06-01
+
+### What's Changed
+
+* Add PHPStan extension banning panicking monad unwraps by @erikgaal in https://github.com/gosuperscript/monads-php/pull/19
+
+**Full Changelog**: https://github.com/gosuperscript/monads-php/compare/v1.2.0...v1.3.0
+
 ## v1.2.0 - 2026-04-17
 
 ### What's Changed
