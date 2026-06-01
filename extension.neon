@@ -1,0 +1,5 @@
+services:
+    -
+        class: Superscript\Monads\PHPStan\NoPanickingMonadUnwrapExtension
+        tags:
+            - phpstan.restrictedMethodUsageExtension
